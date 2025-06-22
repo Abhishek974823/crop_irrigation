@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Irrigation Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="icon">🌱</span>
+                    Smart Irrigation Dashboard
+                </h1>
+                <div class="status-indicator">
+                    <span class="status-dot" id="connectionStatus"></span>
+                    <span class="status-text" id="connectionText">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Alert Section -->
+        <div class="alert-container" id="alertContainer" style="display: none;">
+            <div class="alert alert-warning">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <h3>Irrigation Alert</h3>
+                    <p id="alertMessage">Soil moisture is critically low. Irrigation recommended.</p>
+                </div>
+                <button class="alert-close" onclick="dismissAlert()">×</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <main class="dashboard-grid">
+            <!-- Soil Moisture Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">💧</span>
+                        Soil Moisture
+                    </h2>
+                    <div class="last-updated" id="moistureUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="metric-display">
+                        <div class="metric-value" id="moistureValue">--</div>
+                        <div class="metric-unit">%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="moistureProgress"></div>
+                    </div>
+                    <div class="metric-status" id="moistureStatus">Loading...</div>
+                </div>
+            </div>
+
+            <!-- NPK Sensor Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🧪</span>
+                        NPK Levels
+                    </h2>
+                    <div class="last-updated" id="npkUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="npk-grid">
+                        <div class="npk-item">
+                            <div class="npk-label">Nitrogen (N)</div>
+                            <div class="npk-value" id="nitrogenValue">--</div>
+                            <div class="npk-unit">ppm</div>
+                        </div>
+                        <div class="npk-item">
+                            <div class="npk-label">Phosphorus (P)</div>
+                            <div class="npk-value" id="phosphorusValue">--</div>
+                            <div class="npk-unit">ppm</div>
+                        </div>
+                        <div class="npk-item">
+                            <div class="npk-label">Potassium (K)</div>
+                            <div class="npk-value" id="potassiumValue">--</div>
+                            <div class="npk-unit">ppm</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temperature & Humidity Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🌡️</span>
+                        Climate
+                    </h2>
+                    <div class="last-updated" id="climateUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="climate-grid">
+                        <div class="climate-item">
+                            <div class="climate-label">Temperature</div>
+                            <div class="climate-value" id="temperatureValue">--</div>
+                            <div class="climate-unit">°C</div>
+                        </div>
+                        <div class="climate-item">
+                            <div class="climate-label">Humidity</div>
+                            <div class="climate-value" id="humidityValue">--</div>
+                            <div class="climate-unit">%</div>
+                        </div>
+                    </div>
+                    <div class="climate-status" id="climateStatus">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Weather Report Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🌤️</span>
+                        Weather Report
+                    </h2>
+                    <div class="last-updated" id="weatherUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="weather-main">
+                        <div class="weather-icon" id="weatherIcon">☀️</div>
+                        <div class="weather-temp" id="weatherTemp">--°C</div>
+                        <div class="weather-desc" id="weatherDesc">Loading...</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <span class="detail-label">Feels like:</span>
+                            <span class="detail-value" id="feelsLike">--°C</span>
+                        </div>
+                        <div class="weather-detail">
+                            <span class="detail-label">Wind:</span>
+                            <span class="detail-value" id="windSpeed">-- km/h</span>
+                        </div>
+                        <div class="weather-detail">
+                            <span class="detail-label">Pressure:</span>
+                            <span class="detail-value" id="pressure">-- hPa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Crop Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🤖</span>
+                        AI Crop Recommendation
+                    </h2>
+                    <div class="last-updated" id="cropsUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="single-crop-recommendation" id="singleCropRecommendation">
+                        <div class="loading-message">Analyzing conditions...</div>
+                    </div>
+                    <div class="current-conditions" id="currentConditions">
+                        <div class="conditions-grid">
+                            <div class="condition-item">
+                                <span class="condition-label">NPK</span>
+                                <span class="condition-value" id="npkSummary">--</span>
+                            </div>
+                            <div class="condition-item">
+                                <span class="condition-label">Temperature</span>
+                                <span class="condition-value" id="tempSummary">--°C</span>
+                            </div>
+                            <div class="condition-item">
+                                <span class="condition-label">Humidity</span>
+                                <span class="condition-value" id="humiditySummary">--%</span>
+                            </div>
+                            <div class="condition-item">
+                                <span class="condition-label">Moisture</span>
+                                <span class="condition-value" id="moistureSummary">--%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">⚙️</span>
+                        System Status
+                    </h2>
+                    <div class="last-updated" id="systemUpdated">--</div>
+                </div>
+                <div class="card-content">
+                    <div class="system-stats">
+                        <div class="system-stat">
+                            <div class="stat-label">Irrigation System</div>
+                            <div class="stat-value" id="irrigationStatus">
+                                <span class="status-indicator-small active"></span>
+                                Active
+                            </div>
+                        </div>
+                        <div class="system-stat">
+                            <div class="stat-label">Last Watering</div>
+                            <div class="stat-value" id="lastWatering">2 hours ago</div>
+                        </div>
+                        <div class="system-stat">
+                            <div class="stat-label">Water Level</div>
+                            <div class="stat-value" id="waterLevel">85%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🎛️</span>
+                        Quick Actions
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="manualIrrigation()">
+                            💧 Start Irrigation
+                        </button>
+                        <button class="action-btn secondary" onclick="refreshData()">
+                            🔄 Refresh Data
+                        </button>
+                        <button class="action-btn secondary" onclick="exportData()">
+                            📊 Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Smart Irrigation System. Last sync: <span id="lastSync">--</span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
