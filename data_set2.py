@@ -4,16 +4,16 @@ from sklearn.utils import resample
 
 np.random.seed(42)
 
-# =========================================================
+
 # LOAD DATASETS
-# =========================================================
+
 
 irrigation_df = pd.read_csv("updated_dataset_without_crop.csv")
 crop_df = pd.read_csv("crop_dataset.csv")
 
-# =========================================================
+
 # FUNCTION FOR REALISTIC AUGMENTATION
-# =========================================================
+
 
 def augment_numeric_column(series, noise_percent=0.05):
     """
@@ -24,9 +24,9 @@ def augment_numeric_column(series, noise_percent=0.05):
     return series + noise
 
 
-# =========================================================
+
 # IRRIGATION DATASET AUGMENTATION
-# =========================================================
+
 
 TARGET_IRRIGATION_SIZE = 50000
 
@@ -76,9 +76,9 @@ irrigation_aug.to_csv(
 print("Augmented irrigation dataset created.")
 
 
-# =========================================================
+
 # CROP DATASET AUGMENTATION
-# =========================================================
+
 
 TARGET_CROP_SIZE = 50000
 
